@@ -27,6 +27,7 @@ export function UserList({ users, onUserUpdate }: Props) {
               user={user}
               onSave={(updatedUser) => {
                 onUserUpdate(updatedUser);
+                setEditedUserId(null);
               }}
               onCancel={() => setEditedUserId(null)}
             />
