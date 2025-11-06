@@ -1,8 +1,5 @@
+import type { ValidationResult } from '../types';
 import { ACCEPTED_MIME_TYPES } from './constants';
-
-type ValidationResult<T> =
-  | { isSuccess: true; data: T }
-  | { isSuccess: false; error: string };
 
 export function validateTextFile(file: unknown): ValidationResult<File> {
   if (!(file instanceof File)) {
