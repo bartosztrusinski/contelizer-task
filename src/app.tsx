@@ -34,7 +34,10 @@ export function App() {
 
   return (
     <main>
-      <div style={{ marginBottom: '1rem' }}>
+      <div
+        role='tablist'
+        aria-label='Task Tabs'
+        style={{ marginBottom: '1rem' }}>
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -43,13 +46,24 @@ export function App() {
               fontWeight: activeTab === tab.key ? 'bold' : 'normal',
               marginRight: '0.5rem',
             }}
+            role='tab'
+            id={`tab-${tab.key}`}
+            aria-controls={`panel-${tab.key}`}
             aria-selected={activeTab === tab.key}>
             {tab.label}
           </button>
         ))}
       </div>
       <Suspense fallback={<div>Loading...</div>}>
-        {ActiveComponent && <ActiveComponent />}
+        {ActiveComponent && (
+          <div
+            role='tabpanel'
+            aria-labelledby={`tab-${activeTab}`}
+            id={`panel-${activeTab}`}
+            tabIndex={0}>
+            <ActiveComponent />
+          </div>
+        )}
       </Suspense>
     </main>
   );
