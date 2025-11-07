@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { UserList } from './components/user-list';
-import type { User } from './types';
+import type { QueryUserBy, User } from './types';
 import { USERS_PER_PAGE } from './constants';
 import { useDebounce, useQuery } from './hooks';
 import { getUsers } from './utils';
@@ -9,6 +9,7 @@ import { Pagination } from './components/pagination';
 export function ApiTask() {
   const [query, setQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
+  const [selectedQueryBy, setSelectedQueryBy] = useState<QueryUserBy>('name');
   const debouncedQuery = useDebounce(query, 500);
   const {
     data: users,
@@ -16,17 +17,22 @@ export function ApiTask() {
     isError,
     isLoading,
   } = useQuery<User[]>({
-    queryKeys: [debouncedQuery, page],
+    queryKeys: [debouncedQuery, page, selectedQueryBy],
     initialData: [],
     queryFn: (controller) =>
-      getUsers({ page, query: debouncedQuery, controller }),
+      getUsers({
+        page,
+        query: debouncedQuery,
+        controller,
+        queryBy: selectedQueryBy,
+      }),
   });
   const isFirstPage = page === 1;
   const isLastPage = users.length < USERS_PER_PAGE;
 
   useEffect(() => {
     setPage(1);
-  }, [debouncedQuery]);
+  }, [debouncedQuery, selectedQueryBy]);
 
   return (
     <>
@@ -38,6 +44,16 @@ export function ApiTask() {
           onChange={(event) => setQuery(event.target.value)}
           aria-label='Search users by name'
         />
+      </label>
+      <br />
+      <label>
+        Search By:
+        <select
+          value={selectedQueryBy}
+          onChange={(e) => setSelectedQueryBy(e.target.value as QueryUserBy)}>
+          <option value='name'>Name</option>
+          <option value='email'>Email</option>
+        </select>
       </label>
 
       {isError ? (

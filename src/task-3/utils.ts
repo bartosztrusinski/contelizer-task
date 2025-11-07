@@ -1,5 +1,5 @@
 import { USERS_API_URL, USERS_PER_PAGE } from './constants';
-import type { User } from './types';
+import type { QueryUserBy, User } from './types';
 
 export async function updateUser(
   userId: User['id'],
@@ -24,6 +24,7 @@ export async function updateUser(
 type GetUsersParams = {
   page: number;
   query?: string;
+  queryBy?: QueryUserBy;
   controller?: AbortController;
 };
 
@@ -31,13 +32,14 @@ export async function getUsers({
   page,
   query,
   controller,
+  queryBy = 'name',
 }: GetUsersParams): Promise<User[]> {
   const usersUrl = new URL(USERS_API_URL);
   usersUrl.searchParams.append('page', String(page));
   usersUrl.searchParams.append('per_page', USERS_PER_PAGE.toString());
 
   if (query) {
-    usersUrl.searchParams.append('name', query);
+    usersUrl.searchParams.append(queryBy, query);
   }
 
   const response = await fetch(usersUrl, { signal: controller?.signal });

@@ -5,3 +5,5 @@ export type User = {
   gender: 'male' | 'female';
   status: 'active' | 'inactive';
 };
+
+export type QueryUserBy = keyof Pick<User, 'name' | 'email'>;
