@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UserList } from './components/user-list';
 import type { User } from './types';
 import { USERS_PER_PAGE } from './constants';
@@ -24,6 +24,10 @@ export function ApiTask() {
   const isFirstPage = page === 1;
   const isLastPage = users.length < USERS_PER_PAGE;
 
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedQuery]);
+
   return (
     <>
       <label>
@@ -31,10 +35,7 @@ export function ApiTask() {
         <input
           type='search'
           value={query}
-          onChange={(event) => {
-            setQuery(event.target.value);
-            setPage(1);
-          }}
+          onChange={(event) => setQuery(event.target.value)}
           aria-label='Search users by name'
         />
       </label>
